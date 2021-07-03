@@ -1,6 +1,5 @@
 #include "fileHandling.h"
 
-
 char* readFile(char filename[]) {
 
     FILE *filePointer;
@@ -10,7 +9,7 @@ char* readFile(char filename[]) {
     int bufferSize = ftell(filePointer);
     fseek(filePointer, 0, SEEK_SET);
 
-    char *buffer = malloc(bufferSize + 1);
+    char* buffer = (char*) malloc(bufferSize + 1);
     fread(buffer, 1, bufferSize, filePointer);
     buffer[bufferSize] = '\0';
 
