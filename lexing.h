@@ -1,8 +1,8 @@
 #include <string.h>
 #include <stdlib.h>
 
-#ifndef LEXING.h
-#define LEXING.h
+#ifndef LEXING
+#define LEXING
 
 // types
 typedef enum state {
@@ -21,7 +21,6 @@ typedef enum tokenType {
         KEYWORD, RETURN_KEYWORD,
         INTEGER, REAL,
         CHAR, BACKSLAH_CHAR, STRING,
-        STRING,
         ASSIGNMENT,
         ADDITION, SUBTRACTION, MULTIPLICATION, DIVISION,
         LEFT_PAR, RIGHT_PAR, LEFT_BRACE, RIGHT_BRACE,
@@ -38,11 +37,12 @@ typedef struct token {
 
 // functions
 token* lexer(const char* src, int size);
-int isKeyWordBool(char* name);
-int isSpecialCharBool(char character);
-int isOperatorBool(char character);
-int isAlphabeticalBool(char character);
-int isNumericalBool(char character);
+static int isKeyWordBool(char* name);
+static int isSpecialCharBool(char character);
+static int isOperatorBool(char character);
+static int isAlphabeticalBool(char character);
+static int isNumericalBool(char character);
+static tokenType findTokenType(char character);
 //
 
 
