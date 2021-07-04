@@ -4,7 +4,6 @@
 #ifndef LEXING
 #define LEXING
 
-// types
 typedef enum state {
     WHITE_SPACE, COMMENT, MULTI_LINE_COMMENT,
     TOKEN_COMPLETE,
@@ -33,9 +32,7 @@ typedef struct token {
 } token;
 
 #endif
-//
 
-// functions
 token* lexer(const char* src, int size);
 static int isKeyWordBool(char* name);
 static int isSpecialCharBool(char character);
@@ -43,7 +40,5 @@ static int isOperatorBool(char character);
 static int isAlphabeticalBool(char character);
 static int isNumericalBool(char character);
 static tokenType findTokenType(char character);
-//
-
 
 #endif
