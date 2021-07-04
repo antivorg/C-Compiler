@@ -1,11 +1,10 @@
 /*
  *
- * A Trivial C to x86 assembly compiler written in C
+ * A trivial C to x86 assembly compiler written in C
  * 
  */
 
-#include "fileHandling.h"
-#include "lexing.h"
+#include "headers/main.h"
 
 int main(int argc, char *argv[]) {
 
@@ -19,6 +18,13 @@ int main(int argc, char *argv[]) {
 
     for (int j=0; j<argc-1; j++) {
         tokens[j] = lexer(src[j], sizeof(src));
+    }
+
+    for (int i=0; i<argc-1; i++) {
+        for (int j=0; j<10; j++) {
+            puts(tokens[i]->value);
+            tokens[i]++;
+        }
     }
 
     return 1;
