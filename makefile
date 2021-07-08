@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS=-I -Wall
+CFLAGS=-I -Wall $(ARGS)
 
 _DEPS = main.h fileHandling.h lexing.h
 _OBJ = main.o fileHandling.o lexing.o 
@@ -20,7 +20,4 @@ $(EDIR)/ccc: $(OBJ)
 .PHONY: clean
 
 clean:
-	rm $(OBJ)
-
-cleanExe:
-	rm $(ODIR)/ccc.exe
+	rm $(OBJ) $(EDIR)/ccc.exe
