@@ -1,28 +1,24 @@
 #include "headers/lexing.h"
 
-extern token* lexer(const char* src, int size) {
+token* lexer(char* src, int size) {
 
     state currentState = WHITE_SPACE;
-    token* tokens = (token*) malloc(sizeof(token*));
+    token* tokens = (token*) malloc(0);
 
-    char* tokenValue = (char*) malloc(sizeof(char));
-    tokenValue[0] = '\0';
-
-    char buff[2] = "\0";
-    int tokenNum = 0;
-
-    int numericIsFloatBool = 0;
-
-    /*
-     *  A state machine enumerating through each character src[i]
-     */
+    int tokenNum = 0, valueIndex = 0, isFloatBool = 0;
 
     for (int i=0; i<size; i++) {
 
         switch (currentState) {
+
             case TOKEN_COMPLETE:
             case WHITE_SPACE:
-                if (src[i]=='/' && src[i+1]=='/') {
+                if (src[i]==' ') {
+                    currentState = WHITE_SPACE;
+                } else if (src[i]=='\r' && src[i+1]=='\n') {
+                    currentState = WHITE_SPACE;
+                    i++;
+                } else if (src[i]=='/' && src[i+1]=='/') {
                     currentState = COMMENT;
                     i++;
                 } else if (src[i]=='/' && src[i+1]=='*') {
@@ -30,50 +26,53 @@ extern token* lexer(const char* src, int size) {
                     i++;
                 } else if (isSpecialCharBool(src[i])) {
                     currentState = TOKEN_COMPLETE;
-                    tokens = (token*) realloc(tokens, sizeof(tokens)+sizeof(token));
-                    tokenNum++;
+                    tokens = realloc(tokens, sizeof(tokens)+sizeof(token));
+                    tokens[tokenNum].value = malloc(sizeof(char));
+                    tokens[tokenNum].value[0] = src[i];
                     tokens[tokenNum].type = findTokenType(src[i]);
-                    *tokens[tokenNum].value = src[i];
-                    *(++tokens[tokenNum].value) = '\0';
+                    tokenNum++;
                 } else if (isOperatorBool(src[i])) {
                     currentState = TOKEN_COMPLETE;
-                    tokens = (token*) realloc(tokens, sizeof(tokens)+sizeof(token));
-                    tokenNum++;
+                    tokens = realloc(tokens, sizeof(tokens)+sizeof(token));
+                    tokens[tokenNum].value = malloc(sizeof(char));
+                    tokens[tokenNum].value[0] = src[i];
                     tokens[tokenNum].type = findTokenType(src[i]);
-                    *tokens[tokenNum].value = src[i];
-                    *(++tokens[tokenNum].value) = '\0';
+                    tokenNum++;
                 } else if (isNumericalBool(src[i])) {
                     currentState = TOKEN_NUMERIC;
-                    tokenValue = (char*) realloc(tokenValue, sizeof(tokenValue)+sizeof(char));
-                    buff[0] = src[i];
-                    tokenValue = strcat(tokenValue, buff);
+                    tokens = realloc(tokens, sizeof(tokens)+sizeof(token));
+                    tokens[tokenNum].value = malloc(sizeof(char));
+                    tokens[tokenNum].value[0] = src[i];
                 } else if (isAlphabeticalBool(src[i])) {
                     currentState = TOKEN_IDENTIFIER;
-                    tokenValue = (char*) realloc(tokenValue, sizeof(tokenValue)+sizeof(char));
-                    buff[0] = src[i];
-                    tokenValue = strcat(tokenValue, buff);
+                    tokens = realloc(tokens, sizeof(tokens)+sizeof(token));
+                    tokens[tokenNum].value = malloc(sizeof(char));
+                    tokens[tokenNum].value[0] = src[i];
                 }
                 break;
 
             case TOKEN_IDENTIFIER:
                 if (isAlphabeticalBool(src[i]) || isNumericalBool(src[i])) {
-                    tokenValue = (char*) realloc(tokenValue, sizeof(tokenValue)+sizeof(char));
-                    buff[0] = src[i];
-                    tokenValue = strcat(tokenValue, buff);
+                    tokens[tokenNum].value = realloc(tokens[tokenNum].value,
+                                                    sizeof(tokens[tokenNum].value)+sizeof(char));
+                    tokens[tokenNum].value[++valueIndex] = src[i];
                 } else {
-                    tokens = (token*) realloc(tokens, sizeof(tokens)+sizeof(token));
-                    tokenNum++;
-                    if (strcmp(tokenValue, "return")) {
+                    tokens[tokenNum].value[++valueIndex] = '\0';
+                    if (!strcmp(tokens[tokenNum].value, "return")) {
                         tokens[tokenNum].type = RETURN_KEYWORD;
-                    } else if (isKeyWordBool(tokenValue)) {
+                    } else if (isKeyWordBool(tokens[tokenNum].value)) {
                         tokens[tokenNum].type = KEYWORD;
                     } else {
                         tokens[tokenNum].type = IDENTIFIER;
                     }
-                    tokens[tokenNum].value = tokenValue;
-                    tokenValue = (char*) realloc(tokenValue, sizeof(char));
-                    tokenValue[0] = '\0';
-                    if (src[i]=='/' && src[i+1]=='/') {
+                    valueIndex = 0;
+                    tokenNum++;
+                    if (src[i]==' ') {
+                        currentState = WHITE_SPACE;
+                    } else if (src[i]=='\r' && src[i+1]=='\n') {
+                        currentState = WHITE_SPACE;
+                        i++;
+                    } else if (src[i]=='/' && src[i+1]=='/') {
                         currentState = COMMENT;
                         i++;
                     } else if (src[i]=='/' && src[i+1]=='*') {
@@ -81,44 +80,52 @@ extern token* lexer(const char* src, int size) {
                         i++;
                     } else if (isSpecialCharBool(src[i])) {
                         currentState = TOKEN_COMPLETE;
-                        tokens = (token*) realloc(tokens, sizeof(tokens)+sizeof(token));
-                        tokenNum++;
+                        tokens = realloc(tokens, sizeof(tokens)+sizeof(token));
+                        tokens[tokenNum].value = malloc(sizeof(char));
+                        tokens[tokenNum].value[0] = src[i];
                         tokens[tokenNum].type = findTokenType(src[i]);
-                        *tokens[tokenNum].value = src[i];
-                        *(++tokens[tokenNum].value) = '\0';
+                        tokenNum++;
                     } else if (isOperatorBool(src[i])) {
                         currentState = TOKEN_COMPLETE;
-                        tokens = (token*) realloc(tokens, sizeof(tokens)+sizeof(token));
-                        tokenNum++;
+                        tokens = realloc(tokens, sizeof(tokens)+sizeof(token));
+                        tokens[tokenNum].value = malloc(sizeof(char));
+                        tokens[tokenNum].value[0] = src[i];
                         tokens[tokenNum].type = findTokenType(src[i]);
-                        *tokens[tokenNum].value = src[i];
-                        *(++tokens[tokenNum].value) = '\0';
-                    }
+                        tokenNum++;
+                    } else if (isNumericalBool(src[i])) {
+                        currentState = TOKEN_NUMERIC;
+                        tokens = realloc(tokens, sizeof(tokens)+sizeof(token));
+                        tokens[tokenNum].value = malloc(sizeof(char));
+                        tokens[tokenNum].value[0] = src[i];
+                    } 
                 }
                 break;
 
             case TOKEN_NUMERIC:
                 if (isNumericalBool(src[i])) {
-                    tokenValue = (char*) realloc(tokenValue, sizeof(tokenValue)+sizeof(char));
-                    buff[0] = src[i];
-                    tokenValue = strcat(tokenValue, buff);
+                    tokens[tokenNum].value = realloc(tokens[tokenNum].value,
+                                                    sizeof(tokens[tokenNum].value)+sizeof(char));
+                    tokens[tokenNum].value[++valueIndex] = src[i];
                 } else if (src[i]=='.') {
-                    numericIsFloatBool = 1;
-                    tokenValue = (char*) realloc(tokenValue, sizeof(tokenValue)+sizeof(char));
-                    buff[0] = src[i];
-                    tokenValue = strcat(tokenValue, buff);
+                    isFloatBool = 1;
+                    tokens[tokenNum].value = realloc(tokens[tokenNum].value,
+                                                    sizeof(tokens[tokenNum].value)+sizeof(char));
+                    tokens[tokenNum].value[++valueIndex] = src[i];
                 } else {
-                    tokens = (token*) realloc(tokens, sizeof(tokens)+sizeof(token));
-                    tokenNum++;
-                    if (numericIsFloatBool) {
+                    tokens[tokenNum].value[++valueIndex] = '\0';
+                    if (isFloatBool) {
                         tokens[tokenNum].type = REAL;
                     } else {
                         tokens[tokenNum].type = INTEGER;
                     }
-                    tokens[tokenNum].value = tokenValue;
-                    tokenValue = (char*) realloc(tokenValue, sizeof(char));
-                    tokenValue[0] = '\0';
-                    if (src[i]=='/' && src[i+1]=='/') {
+                    valueIndex = 0;
+                    tokenNum++;
+                    if (src[i]==' ') {
+                        currentState = WHITE_SPACE;
+                    } else if (src[i]=='\r' && src[i+1]=='\n') {
+                        currentState = WHITE_SPACE;
+                        i++;
+                    } else if (src[i]=='/' && src[i+1]=='/') {
                         currentState = COMMENT;
                         i++;
                     } else if (src[i]=='/' && src[i+1]=='*') {
@@ -126,24 +133,29 @@ extern token* lexer(const char* src, int size) {
                         i++;
                     } else if (isSpecialCharBool(src[i])) {
                         currentState = TOKEN_COMPLETE;
-                        tokens = (token*) realloc(tokens, sizeof(tokens)+sizeof(token));
-                        tokenNum++;
+                        tokens = realloc(tokens, sizeof(tokens)+sizeof(token));
+                        tokens[tokenNum].value = malloc(sizeof(char));
+                        tokens[tokenNum].value[0] = src[i];
                         tokens[tokenNum].type = findTokenType(src[i]);
-                        *tokens[tokenNum].value = src[i];
-                        *(++tokens[tokenNum].value) = '\0';
+                        tokenNum++;
                     } else if (isOperatorBool(src[i])) {
                         currentState = TOKEN_COMPLETE;
-                        tokens = (token*) realloc(tokens, sizeof(tokens)+sizeof(token));
-                        tokenNum++;
+                        tokens = realloc(tokens, sizeof(tokens)+sizeof(token));
+                        tokens[tokenNum].value = malloc(sizeof(char));
+                        tokens[tokenNum].value[0] = src[i];
                         tokens[tokenNum].type = findTokenType(src[i]);
-                        *tokens[tokenNum].value = src[i];
-                        *(++tokens[tokenNum].value) = '\0';
+                        tokenNum++;
+                    } else if (isAlphabeticalBool(src[i])) {
+                        currentState = TOKEN_IDENTIFIER;
+                        tokens = realloc(tokens, sizeof(tokens)+sizeof(token));
+                        tokens[tokenNum].value = malloc(sizeof(char));
+                        tokens[tokenNum].value[0] = src[i];
                     }
                 }
                 break;
-
             case COMMENT:
-                if (src[i]=='\n' && src[i]=='\r') {
+
+                if (src[i]=='\r' && src[i]=='\n') {
                     currentState = WHITE_SPACE;
                     i++;
                 }
@@ -155,11 +167,10 @@ extern token* lexer(const char* src, int size) {
                     i++;
                 }
                 break;
-        }
-
+            }
     }
-
-    free(tokenValue);
+    tokens = realloc(tokens, sizeof(tokens)+sizeof(token));
+    tokens[tokenNum].type = FILE_END;
 
     return tokens;
 }
@@ -169,7 +180,7 @@ static int isKeyWordBool(char* name) {
     const char* keywords[] = {
         "int", "double", "char", "void"
     };
-    for (int i=0; i<sizeof(keywords); i++) {
+    for (int i=0; i<sizeof(keywords)/sizeof(const char*); i++) {
         if (!strcmp(keywords[i], name)) {
             return 1;
         }
@@ -180,7 +191,7 @@ static int isKeyWordBool(char* name) {
 static int isSpecialCharBool(char character) {
 
     const char specialChars[] = {
-        ';'
+        ';', '(', ')', '{', '}', ',', ';'
     };
     for (int i=0; i<sizeof(specialChars); i++) {
         if (specialChars[i] == character) {
@@ -216,7 +227,7 @@ static int isAlphabeticalBool(char character) {
 
 static int isNumericalBool(char character) {
 
-    if (character >= '9') {
+    if (character <= '9' && character >= '0') {
         return 1;
     } else {
         return 0;

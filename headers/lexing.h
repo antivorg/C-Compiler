@@ -23,7 +23,7 @@ typedef enum tokenType {
         ASSIGNMENT,
         ADDITION, SUBTRACTION, MULTIPLICATION, DIVISION,
         LEFT_PAR, RIGHT_PAR, LEFT_BRACE, RIGHT_BRACE,
-        COMMA, SEMICOLON
+        COMMA, SEMICOLON, FILE_END
 } tokenType;
 
 typedef struct token {
@@ -33,7 +33,7 @@ typedef struct token {
 
 #endif
 
-token* lexer(const char* src, int size);
+token* lexer(char* src, int size);
 static int isKeyWordBool(char* name);
 static int isSpecialCharBool(char character);
 static int isOperatorBool(char character);

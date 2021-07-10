@@ -22,13 +22,19 @@ int main(int argc, char *argv[]) {
 
     for (int j=0; j<argc-1; j++) {
         tokens[j] = lexer(src[j], strlen(src[j]));
-    }printf("yoooooooo");
+    }
 
     #ifdef DEBUG
     for (int i=0; i<argc-1; i++) {
         int j=0;
-        while (tokens[j] != NULL) {
-            puts(tokens[j]->value);
+        while (tokens[i][j].type != FILE_END) {
+            if (tokens[i][j].type == REAL || tokens[i][j].type == INTEGER ||
+                tokens[i][j].type == IDENTIFIER || tokens[i][j].type == KEYWORD ||
+                tokens[i][j].type == RETURN_KEYWORD) {
+                puts(tokens[i][j].value);
+            } else {
+                printf("%c\n", *tokens[i][j].value);
+            }
             j++;
         }
     }
