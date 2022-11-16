@@ -1,6 +1,6 @@
 /*
  *
- * A trivial C to x86 assembly compiler written in C
+ * A trivial C cross compiler written in C
  * 
  */
 
@@ -8,8 +8,11 @@
 
 int main(int argc, char *argv[]) {
 
+    // No pre-processor for now
+
     char* src[argc-1];
 
+    // Read file
     for (int i=1; i<argc; i++) {
         src[i-1] = readFile(argv[i]);
     }
@@ -18,6 +21,7 @@ int main(int argc, char *argv[]) {
     for (int i=0; i<argc-1; i++) puts(src[i]);
     #endif
 
+    // Lexing
     token* tokens[argc-1];
 
     for (int j=0; j<argc-1; j++) {
@@ -39,6 +43,11 @@ int main(int argc, char *argv[]) {
         }
     }
     #endif
+
+    // Parsing
+    for (int k=0; k<argc-1; k++) {
+        parse(tokens);
+    }
 
     return 1;
 }

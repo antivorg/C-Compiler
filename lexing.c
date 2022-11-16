@@ -1,5 +1,5 @@
 #include "headers/lexing.h"
-
+#include <stdio.h>
 token* lexer(char* src, int size) {
 
     state currentState = WHITE_SPACE;
@@ -167,7 +167,7 @@ token* lexer(char* src, int size) {
                     i++;
                 }
                 break;
-            }
+        }
     }
     tokens = realloc(tokens, sizeof(tokens)+sizeof(token));
     tokens[tokenNum].type = FILE_END;
@@ -191,7 +191,7 @@ static int isKeyWordBool(char* name) {
 static int isSpecialCharBool(char character) {
 
     const char specialChars[] = {
-        ';', '(', ')', '{', '}', ',', ';'
+        ';', '(', ')', '{', '}', ','
     };
     for (int i=0; i<sizeof(specialChars); i++) {
         if (specialChars[i] == character) {
@@ -204,7 +204,7 @@ static int isSpecialCharBool(char character) {
 static int isOperatorBool(char character) {
 
     const char operators[] = {
-        '+', '-', '*', '/'
+        '+', '-', '*', '/', '='
     };
     for (int i=0; i<sizeof(operators); i++) {
         if (operators[i] == character) {
@@ -259,7 +259,7 @@ static tokenType findTokenType(char character) {
             return COMMA;
         case ';':
             return SEMICOLON;
-        deafult:
+        default:
             return ERROR;
     }
 }
