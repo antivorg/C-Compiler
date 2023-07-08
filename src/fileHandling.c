@@ -1,4 +1,4 @@
-#include "headers/fileHandling.h"
+#include "../inc/fileHandling.h"
 
 char* readFile(char filename[]) {
 

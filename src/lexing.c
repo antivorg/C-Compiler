@@ -1,5 +1,5 @@
-#include "headers/lexing.h"
-#include <stdio.h>
+#include "../inc/lexing.h"
+
 token* lexer(char* src, int size) {
 
     state currentState = WHITE_SPACE;
@@ -178,7 +178,7 @@ token* lexer(char* src, int size) {
 static int isKeyWordBool(char* name) {
 
     const char* keywords[] = {
-        "int", "double", "char", "void"
+        "int", "double", "char", "void" 
     };
     for (int i=0; i<sizeof(keywords)/sizeof(const char*); i++) {
         if (!strcmp(keywords[i], name)) {

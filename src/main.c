@@ -4,7 +4,7 @@
  * 
  */
 
-#include "headers/main.h"
+#include "../inc/main.h"
 
 int main(int argc, char *argv[]) {
 
@@ -18,7 +18,8 @@ int main(int argc, char *argv[]) {
     }
 
     #ifdef DEBUG
-    for (int i=0; i<argc-1; i++) puts(src[i]);
+    //puts("File contents\n");
+    //for (int i=0; i<argc-1; i++) puts(src[i]);
     #endif
 
     // Lexing
@@ -46,7 +47,8 @@ int main(int argc, char *argv[]) {
 
     // Parsing
     for (int k=0; k<argc-1; k++) {
-        parse(tokens);
+        //parse(tokens[k]);
+	free(tokens[k]);
     }
 
     return 1;

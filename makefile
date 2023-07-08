@@ -1,11 +1,11 @@
 CC = gcc
-CFLAGS=-I -Wall $(ARGS)
+CFLAGS=-I -Wall -g
 
 _DEPS = main.h fileHandling.h lexing.h
 _OBJ = main.o fileHandling.o lexing.o 
 
-IDIR = headers
-ODIR = oFiles
+IDIR = inc
+ODIR = src
 EDIR = bin
 
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
@@ -20,4 +20,4 @@ $(EDIR)/ccc: $(OBJ)
 .PHONY: clean
 
 clean:
-	rm $(OBJ) $(EDIR)/ccc.exe
+	rm $(OBJ) $(EDIR)/ccc

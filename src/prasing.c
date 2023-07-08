@@ -1,4 +1,4 @@
-#include "headers/parsing.h"
+#include "../inc/parsing.h"
 
 leaf* parse(token* tokens) {
 
